@@ -3,6 +3,7 @@ using ChatApp.Context;
 using ChatApp.Enums;
 using Microsoft.AspNetCore.Mvc;
 using ChatApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChatApp.Controllers;
 
@@ -20,6 +21,15 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         return View();
+    }
+
+    [HttpGet("{id:int}")]
+    public IActionResult Chat(int id)
+    {
+        var chat = _ctx.Chats
+            .Include(x => x.Messages)
+            .FirstOrDefault(x => x.Id == id);
+        return View(chat);
     }
 
     [HttpPost]

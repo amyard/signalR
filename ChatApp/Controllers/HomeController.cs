@@ -31,6 +31,22 @@ public class HomeController : Controller
             .FirstOrDefault(x => x.Id == id);
         return View(chat);
     }
+    
+    [HttpPost]
+    public async Task<IActionResult> CreateMessage(int chatId, string message)
+    {
+        var messageModel = new Message()
+        {
+            ChatId = chatId,
+            Text = message,
+            Name = "default"
+        };
+
+        await _ctx.Messages.AddAsync(messageModel);
+        await _ctx.SaveChangesAsync();
+        
+        return RedirectToAction("Chat", new {id = chatId});
+    }
 
     [HttpPost]
     public async Task<IActionResult> CreateRoom(string name)

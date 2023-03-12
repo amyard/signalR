@@ -11,7 +11,8 @@
     }
 </div>
 
-<div class="chat-input">
-    <input type="text">
-    <button>Send</button>
-</div>
+<form class="chat-input" asp-controller="Home" asp-action="CreateMessage">
+    <input type="hidden" value="@Model.Id" name="chatId">
+    <input type="text" name="message">
+    <button type="submit">Send</button>
+</form>

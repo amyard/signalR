@@ -3,10 +3,12 @@ using ChatApp.Context;
 using ChatApp.Enums;
 using Microsoft.AspNetCore.Mvc;
 using ChatApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChatApp.Controllers;
 
+[Authorize]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
@@ -39,7 +41,7 @@ public class HomeController : Controller
         {
             ChatId = chatId,
             Text = message,
-            Name = "default"
+            Name = User?.Identity?.Name ?? "Default"
         };
 
         await _ctx.Messages.AddAsync(messageModel);

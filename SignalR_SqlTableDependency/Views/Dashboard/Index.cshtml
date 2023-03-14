@@ -2,8 +2,30 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    Dashboard
+<div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="x-panel">
+                <div class="x-title">
+                    <h4>Product</h4>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x-content">
+                    <table class="table-hover table" id="tblProduct">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts

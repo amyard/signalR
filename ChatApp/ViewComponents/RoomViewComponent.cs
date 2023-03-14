@@ -1,5 +1,7 @@
-﻿using ChatApp.Context;
+﻿using System.Security.Claims;
+using ChatApp.Context;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChatApp.ViewComponents;
 
@@ -13,7 +15,12 @@ public class RoomViewComponent : ViewComponent
     }
     public IViewComponentResult Invoke()
     {
-        var chats = _ctx.Chats.ToList();
+        var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        var chats = _ctx.ChatUsers
+            .Include(x => x.Chat)
+            .Where(x => x.UserId == userId)
+            .Select(x => x.Chat)
+            .ToList();
         
         return View(chats);
     }

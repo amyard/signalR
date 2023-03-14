@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Security.Claims;
 using ChatApp.Context;
 using ChatApp.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,12 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        return View();
+        var chats = _ctx.Chats
+            .Include(x => x.Users)
+            .Where(x => x.Users.Any(y => y.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            .ToList();
+        
+        return View(chats);
     }
 
     [HttpGet("{id:int}")]
@@ -53,14 +59,43 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateRoom(string name)
     {
-        _ctx.Chats.Add(new Chat()
+        var users = new List<ChatUser>()
+        {
+            new ChatUser
+            {
+                UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value,
+                UserRole = UserRole.Admin
+            }
+        };
+        
+        var chat = new Chat()
         {
             Name = name,
             Type = ChatType.Room
-        });
+        };
+        chat.Users = users;
+
+        _ctx.Chats.Add(chat);
         
         await _ctx.SaveChangesAsync();
         
         return RedirectToAction("Index");
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> JoinChat(int chatId)
+    {
+        var chatUser = new ChatUser()
+        {
+            ChatId = chatId,
+            UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value,
+            UserRole = UserRole.Member
+        };
+        
+        _ctx.ChatUsers.Add(chatUser);
+        
+        await _ctx.SaveChangesAsync();
+        
+        return RedirectToAction("Chat", "Home", new {id = chatId});
     }
 }

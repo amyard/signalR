@@ -36,7 +36,7 @@ public class ProductRepository
 
     public DataTable GetProductDetailsFromDb()
     {
-        var query = "SELECT Id, Name, Category, Price FROM Products";
+        var query = "SELECT Id, Name, Category, Price FROM Product";
         DataTable dataTable = new DataTable();
 
         using (SqlConnection connection = new SqlConnection(_connectionString))

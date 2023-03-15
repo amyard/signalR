@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SignalR_SqlTableDependency.Context;
 using SignalR_SqlTableDependency.Hubs;
+using SignalR_SqlTableDependency.MiddlewareExtensions;
+using SignalR_SqlTableDependency.SubscribeTableDependencies;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +26,10 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+// ADD classes through DI
+builder.Services.AddSingleton<DashboardHub>();
+builder.Services.AddSingleton<SubscribeProductTableDependency>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -45,5 +51,11 @@ app.MapHub<DashboardHub>("/dashboardHub");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Dashboard}/{action=Index}/{id?}");
+
+/*
+ * we must call SubscribeProductTableDependency() here
+ * we create one middleware and call SubscribeProductTableDependency() method in middleware
+ */
+app.UseProductTableDependency();
 
 app.Run();

@@ -10,5 +10,5 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     { }
 
-    private DbSet<Product> Products { get; set; }
+    private DbSet<Product> Product { get; set; }
 }
